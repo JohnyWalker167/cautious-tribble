@@ -108,6 +108,21 @@ async def extract_movie_info(caption):
         print(e)
     return None, None
 
+
+async def generate_duration(file_path: str) -> str:
+    try:
+
+        # Use ffprobe to get video duration
+        duration_cmd = [
+            'ffprobe', '-v', 'error', '-show_entries', 'format=duration', 
+            '-of', 'default=noprint_wrappers=1:nokey=1', file_path
+        ]
+        duration = float(subprocess.check_output(duration_cmd).strip())
+
+        return duration
+    except Exception as e:
+        logger.error(f"Error generating duration: {e}")
+        return None
     
 async def get_movie_poster(movie_name, release_year):
     tmdb_search_url = f'https://api.themoviedb.org/3/search/multi?api_key={TMDB_API_KEY}&query={movie_name}'
